@@ -7,7 +7,7 @@
 #endif
 
 #ifndef CASE	
-#define CASE		100//100:Proposed strategy 101:Conventional strategy
+#define CASE		101//100:Proposed strategy 101:Conventional strategy
 #endif
 
 #ifndef ANIMATION
@@ -148,20 +148,20 @@
 #define SEARCHING	33
 #endif
 
-#ifndef PUSHING_F
-#define PUSHING_F	34
+#ifndef PUSHING_R
+#define PUSHING_R	34
 #endif
 
-#ifndef PUSHING
-#define PUSHING	35
+#ifndef PUSHING_O
+#define PUSHING_O	35
 #endif
 
-#ifndef HOMING
-#define HOMING 		37
+#ifndef HOMING_O
+#define HOMING_O 		37
 #endif
 
-#ifndef RECRUITING
-#define RECRUITING 	38
+#ifndef RECRUITING_N
+#define RECRUITING_N 	38
 #endif
 
 #ifndef FOLLOWING
@@ -172,8 +172,8 @@
 #define LEADING 	40
 #endif
 
-#ifndef HOMING_F
-#define HOMING_F 	41
+#ifndef HOMING_R
+#define HOMING_R 	41
 #endif
 
 #ifndef RECRUITING_S

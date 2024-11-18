@@ -174,7 +174,7 @@ Prey update_food_info(vector<Agent> _agent, Prey food_info, int num_food, int nu
 	upd_food.num_grabbing = 0;//Initialize
 	for (int i = 0; i < num_agent; i++)
 	{
-		if (_agent[i].state == PUSHING_F || _agent[i].state == PUSHING)
+		if (_agent[i].state == PUSHING_R || _agent[i].state == PUSHING_O)
 		{
 			if (_agent[i].food_info.id == food_id) upd_food.num_grabbing++;
 		}
@@ -209,7 +209,7 @@ vector<Agent> resolve_collision(vector<Agent> _agent, vector<Agent> _pastagent, 
 		collision_occur = false;//initialize
 		for (int i = 0; i < num_agent; i++)
 		{
-			if (upd_info[i].state != PUSHING_F && upd_info[i].state != PUSHING)
+			if (upd_info[i].state != PUSHING_R && upd_info[i].state != PUSHING_O)
 			{
 				for (int j = 0; j < num_agent; j++)//robot-robot collision
 				{
@@ -217,7 +217,7 @@ vector<Agent> resolve_collision(vector<Agent> _agent, vector<Agent> _pastagent, 
 					{
 						if (hypot(upd_info[i]._posori.pos.x - upd_info[j]._posori.pos.x, upd_info[i]._posori.pos.y - upd_info[j]._posori.pos.y) < (2 * RADIUS_AGENT - 1e-3))
 						{
-							if ((upd_info[j].state == PUSHING_F || upd_info[j].state == PUSHING))
+							if ((upd_info[j].state == PUSHING_R || upd_info[j].state == PUSHING_O))
 							{
 								if (upd_info[i].collision < 2)//make priority to prevent collide-change oscillation
 								{
@@ -273,7 +273,7 @@ vector<Agent> resolve_collision(vector<Agent> _agent, vector<Agent> _pastagent, 
 		}
 		for (int i = 0; i < num_agent; i++)
 		{
-			if (agent[i].state != PUSHING_F && agent[i].state != PUSHING)
+			if (agent[i].state != PUSHING_R && agent[i].state != PUSHING_O)
 			{
 				switch (upd_info[i].collision)
 				{
@@ -401,15 +401,15 @@ void idle(void)
 		case SEARCHING:
 			state_num[1]++;
 			break;
-		case PUSHING_F:
-		case PUSHING:
+		case PUSHING_R:
+		case PUSHING_O:
 			state_num[2]++;
 			break;
-		case HOMING:
-		case HOMING_F:
+		case HOMING_O:
+		case HOMING_R:
 			state_num[4]++;
 			break;
-		case RECRUITING:
+		case RECRUITING_N:
 		case RECRUITING_S:
 			state_num[5]++;
 			break;

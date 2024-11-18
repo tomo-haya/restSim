@@ -58,19 +58,19 @@ void draw_agent(void)
 			glColor4d(1.0, 0.0, 0.0, 1.0);//RED
 			flag_show = 1;
 			break;
-		case PUSHING_F:
+		case PUSHING_R:
 			glColor4d(0.0, 0.0, 1.0, 1.0);//BLUE
 			flag_show = 1;
 			break;
-		case PUSHING:
+		case PUSHING_O:
 			glColor4d(0.0, 0.0, 1.0, 1.0);//BLUE
 			flag_show = 1;
 			break;
-		case HOMING:
+		case HOMING_O:
 			glColor4d(0.0, 1.0, 1.0, 1.0);//Cyan
 			flag_show = 1;
 			break;
-		case RECRUITING:
+		case RECRUITING_N:
 			glColor4d(0.5, 0.0, 1.0, 1.0);//PURPLE
 			flag_show = 1;
 			break;
@@ -78,7 +78,7 @@ void draw_agent(void)
 			glColor4d(0.5, 0.0, 1.0, 1.0);//PURPLE
 			flag_show = 1;
 			break;
-		case HOMING_F:
+		case HOMING_R:
 			glColor4d(0.0, 1.0, 1.0, 1.0);//Cyan
 			flag_show = 1;
 			break;

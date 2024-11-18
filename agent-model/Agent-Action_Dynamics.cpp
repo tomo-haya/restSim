@@ -81,7 +81,7 @@ Agent _approach2food(vector<Agent> _agent, Agent my_info, xy food_pos, int my_id
 
 	for (int k = 0; k < num_agent; k++)//measure near agent with pushing state
 	{
-		if (_agent[k].state == (PUSHING) && my_id != k)
+		if (_agent[k].state == (PUSHING_O) && my_id != k)
 		{
 			double agent_x = (_agent[k]._posori.pos.x - upd_info._posori.pos.x) * cos(ang_robot2prey) + (_agent[k]._posori.pos.y - upd_info._posori.pos.y) * sin(ang_robot2prey);//agent_k Xpos w.r.t.robot_i
 			double agent_y = -(_agent[k]._posori.pos.x - upd_info._posori.pos.x) * sin(ang_robot2prey) + (_agent[k]._posori.pos.y - upd_info._posori.pos.y) * cos(ang_robot2prey);//agent_k Ypos w.r.t.robot_i

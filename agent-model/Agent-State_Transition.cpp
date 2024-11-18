@@ -23,7 +23,7 @@ Agent _resting2following(vector<Agent> _agent, int num_agent, Agent my_info)
 	Agent upd_info = my_info;
 	for (int j = 0; j < num_agent; j++)
 	{
-		if (_agent[j].state == RECRUITING) //calculate distance to recruiters 
+		if (_agent[j].state == RECRUITING_N) //calculate distance to recruiters 
 		{
 			double dist_robot2recruiter = hypot(_agent[j]._posori.pos.x - my_info._posori.pos.x, _agent[j]._posori.pos.y - my_info._posori.pos.y);
 			double ang_robot2recruiter = atan2(_agent[j]._posori.pos.y - my_info._posori.pos.y, _agent[j]._posori.pos.x - my_info._posori.pos.x);
@@ -73,17 +73,17 @@ Agent _searching2pushing_pushingF(vector<Prey> _food, int num_food, Agent my_inf
 			for (int k = 0; k < num_agent; k++)
 			{
 				double dist_robot2robot = hypot(_agent[k]._posori.pos.x - my_info._posori.pos.x, _agent[k]._posori.pos.y - my_info._posori.pos.y);
-				if ((_agent[k].state == PUSHING || _agent[k].state == PUSHING_F) &&
+				if ((_agent[k].state == PUSHING_O || _agent[k].state == PUSHING_R) &&
 					dist_robot2robot < RADIUS_AGENT + RADIUS_SENSOR)//Any pushing agent is in sensing area
 				{
-					upd_info.state = PUSHING;
+					upd_info.state = PUSHING_O;
 					upd_info.food_info.detect = true;//set for the case which does not perform judge_food
 					upd_info.food_info.id = j;
 				}
 			}
-			if (upd_info.state != PUSHING)//No other agent exists
+			if (upd_info.state != PUSHING_O)//No other agent exists
 			{
-				upd_info.state = PUSHING_F;
+				upd_info.state = PUSHING_R;
 				upd_info.mem_foodpos.x = _food[j].pos.x;
 				upd_info.mem_foodpos.y = _food[j].pos.y;
 				upd_info.mem_foodID = j;
@@ -96,14 +96,14 @@ Agent _searching2pushing_pushingF(vector<Prey> _food, int num_food, Agent my_inf
 		for (int k = 0; k < num_agent; k++)//contact to other pushing robot
 		{
 			double dist_robot2robot = hypot(_agent[k]._posori.pos.x - my_info._posori.pos.x, _agent[k]._posori.pos.y - my_info._posori.pos.y);
-			if ((_agent[k].state == PUSHING) &&
+			if ((_agent[k].state == PUSHING_O) &&
 				dist_robot2robot > RADIUS_GRABBING && //exclude myself(dist=0)
 				dist_robot2robot < (2 * RADIUS_AGENT + RADIUS_GRABBING))//contact to pushing robot
 			{
 				if (dist_robot2prey < (RADIUS_FOOD + RADIUS_SENSOR) &&//food is within the range of sensing area
 					_food[j].transport == false)
 				{
-					upd_info.state = PUSHING;
+					upd_info.state = PUSHING_O;
 					upd_info.food_info.detect = true;//set for the case which does not perform judge_food
 					upd_info.food_info.id = j;
 				}
@@ -124,7 +124,7 @@ Agent _following2pushing(vector<Prey> _food, int num_food, Agent my_info, vector
 		if (dist_robot2prey < (RADIUS_AGENT + RADIUS_FOOD + RADIUS_GRABBING) &&
 			_food[j].transport == false)//contact to food
 		{
-			upd_info.state = PUSHING;
+			upd_info.state = PUSHING_O;
 			upd_info.food_info.detect = true;//set for the case which does not perform judge_food
 			upd_info.food_info.id = j;
 		}
@@ -132,13 +132,13 @@ Agent _following2pushing(vector<Prey> _food, int num_food, Agent my_info, vector
 		for (int k = 0; k < num_agent; k++)
 		{
 			double dist_robot2robot = hypot(_agent[k]._posori.pos.x - my_info._posori.pos.x, _agent[k]._posori.pos.y - my_info._posori.pos.y);
-			if (_agent[k].state == PUSHING &&
+			if (_agent[k].state == PUSHING_O &&
 				dist_robot2robot < (2 * RADIUS_AGENT + RADIUS_GRABBING))//contact to pushing robot
 			{
 				if (dist_robot2prey < (RADIUS_FOOD + RADIUS_SENSOR) &&//food is in sensing area
 					_food[j].transport == false)
 				{
-					upd_info.state = PUSHING;
+					upd_info.state = PUSHING_O;
 					upd_info.food_info.detect = true;//set for the case which does not perform judge_food
 					upd_info.food_info.id = j;
 				}
@@ -152,7 +152,7 @@ Agent _following2searching(Agent my_info, Agent leader_info)
 {
 	Agent upd_info = my_info;
 	double dist2robot = hypot(leader_info._posori.pos.x - my_info._posori.pos.x, leader_info._posori.pos.y - my_info._posori.pos.y);//calculate robot-robot distance
-	if ((leader_info.state == PUSHING_F) && //leader is in pushing
+	if ((leader_info.state == PUSHING_R) && //leader is in pushing
 		dist2robot < (RADIUS_SENSOR + RADIUS_AGENT))//leader is in sensing area
 	{
 		upd_info.state = SEARCHING;
@@ -168,7 +168,7 @@ Agent _following2searching2(Agent my_info, Agent leader_info)
 {
 	Agent upd_info = my_info;
 	double dist2robot = hypot(leader_info._posori.pos.x - my_info._posori.pos.x, leader_info._posori.pos.y - my_info._posori.pos.y);//calculate robot-robot distance
-	if ((leader_info.state == PUSHING_F) && //leader is in pushing
+	if ((leader_info.state == PUSHING_R) && //leader is in pushing
 		dist2robot < (RADIUS_SENSOR + RADIUS_AGENT))//leader is in sensing area
 	{
 		upd_info.state = SEARCHING;
@@ -193,7 +193,7 @@ Agent _following2searching2(Agent my_info, Agent leader_info)
 Agent _searching2homing(Agent my_info)
 {
 	Agent upd_info = my_info;
-	if (my_info.time_searching > MAXTIME_SEARCH) upd_info.state = HOMING;
+	if (my_info.time_searching > MAXTIME_SEARCH) upd_info.state = HOMING_O;
 	return upd_info;
 }
 
@@ -228,11 +228,11 @@ Agent _following2homing(Agent my_info, Agent leader_info)
 {
 	Agent upd_info = my_info;
 	double dist2robot = hypot(leader_info._posori.pos.x - my_info._posori.pos.x, leader_info._posori.pos.y - my_info._posori.pos.y);//calculate robot-robot distance
-	if (((leader_info.state == HOMING || leader_info.state == HOMING_F) && //leader is in homing
+	if (((leader_info.state == HOMING_O || leader_info.state == HOMING_R) && //leader is in homing
 		dist2robot < (RADIUS_SENSOR + RADIUS_AGENT)) || //leader is in sensing area
 		dist2robot >= (RADIUS_SENSOR + RADIUS_AGENT))//lost leader
 	{
-		upd_info.state = HOMING;
+		upd_info.state = HOMING_O;
 	}
 
 	return upd_info;
@@ -249,7 +249,7 @@ Agent _leading2pushingF(vector<Prey> _food, int num_food, Agent my_info, vector<
 		if (dist_robot2prey < (RADIUS_AGENT + RADIUS_FOOD + RADIUS_GRABBING) &&
 			_food[j].transport == false)//contact to food
 		{
-			upd_info.state = PUSHING_F;
+			upd_info.state = PUSHING_R;
 			upd_info.mem_foodpos.x = _food[j].pos.x;
 			upd_info.mem_foodpos.y = _food[j].pos.y;
 			upd_info.mem_foodID = j;
@@ -261,14 +261,14 @@ Agent _leading2pushingF(vector<Prey> _food, int num_food, Agent my_info, vector<
 		for (int k = 0; k < num_agent; k++)
 		{
 			double dist_robot2robot = hypot(_agent[k]._posori.pos.x - my_info._posori.pos.x, _agent[k]._posori.pos.y - my_info._posori.pos.y);
-			if ((_agent[k].state == PUSHING) &&
+			if ((_agent[k].state == PUSHING_O) &&
 				dist_robot2robot > RADIUS_GRABBING && //exclude myself(dist=0)
 				dist_robot2robot < (2 * RADIUS_AGENT + RADIUS_GRABBING))//contact to pushing robot
 			{
 				if (dist_robot2prey < (RADIUS_FOOD + RADIUS_SENSOR) &&//food is in sensing area
 					_food[j].transport == false)
 				{
-					upd_info.state = PUSHING_F;
+					upd_info.state = PUSHING_R;
 					upd_info.mem_foodpos.x = _food[j].pos.x;
 					upd_info.mem_foodpos.y = _food[j].pos.y;
 					upd_info.mem_foodID = j;
@@ -290,7 +290,7 @@ Agent _leading2homing(vector<Prey> _food, int num_food, Agent my_info)
 	if (dist2prey < (RADIUS_SENSOR + RADIUS_FOOD) &&
 		upd_info.food_info.detect == false)
 	{
-		upd_info.state = HOMING;
+		upd_info.state = HOMING_O;
 	}
 	return upd_info;
 }
@@ -317,7 +317,7 @@ Agent _pushingF2homingF(Agent my_info, Prey food)
 	if (my_info.time_pushinglead > MAXTIME_PUSHINGLEAD &&
 		food.transport == false)
 	{
-		upd_info.state = HOMING_F;
+		upd_info.state = HOMING_R;
 	}
 	return upd_info;
 }
@@ -329,7 +329,7 @@ Agent _homingF2recruiting(Agent my_info)
 
 	if (dist2nest < RADIUS_N)//arrive at the resting area
 	{
-		upd_info.state = RECRUITING;
+		upd_info.state = RECRUITING_N;
 		upd_info.time_recruiting = 0;//recruiting time is resetted
 		upd_info.dist_straight = 0;//free path is resetted
 	}
@@ -341,7 +341,7 @@ Agent _pushing2homing(Agent my_info, Prey food)
 	Agent upd_info = my_info;
 	if (food.inside_nest == true)
 	{
-		upd_info.state = HOMING;
+		upd_info.state = HOMING_O;
 	}
 	return upd_info;
 }
@@ -387,17 +387,17 @@ Agent agent_state_transition_rule(vector<Prey> _food, int num_food, Agent my_inf
 		upd_info = _searching2pushing_pushingF(_food, num_food, upd_info, _agent, num_agent);//pushing:pushing(F) and pushing
 		upd_info = _searching2homing(upd_info);
 		break;
-	case PUSHING_F:
+	case PUSHING_R:
 		upd_info = _pushing2homing(upd_info, _food[upd_info.food_info.id]);
 		upd_info = _pushingF2homingF(upd_info, _food[upd_info.food_info.id]);
 		break;
-	case PUSHING:
+	case PUSHING_O:
 		upd_info = _pushing2homing(upd_info, _food[upd_info.food_info.id]);
 		break;
-	case HOMING:
+	case HOMING_O:
 		upd_info = _homing2resting(upd_info);
 		break;
-	case RECRUITING:
+	case RECRUITING_N:
 		upd_info = _recruiting2leading(upd_info);
 		break;
 	case FOLLOWING:
@@ -409,7 +409,7 @@ Agent agent_state_transition_rule(vector<Prey> _food, int num_food, Agent my_inf
 		upd_info = _leading2pushingF(_food, num_food, upd_info, _agent, num_agent);
 		upd_info = _leading2homing(_food, num_food, upd_info);
 		break;
-	case HOMING_F:
+	case HOMING_R:
 		upd_info = _homingF2recruiting(upd_info);
 		break;
 	default:
@@ -427,11 +427,11 @@ Agent agent_conventional_state_transition_rule(vector<Prey> _food, int num_food,
 		upd_info = _searching2pushing_pushingF(_food, num_food, upd_info, _agent, num_agent);
 		upd_info = _searching2following(_agent, num_agent, upd_info);
 		break;
-	case PUSHING_F:
+	case PUSHING_R:
 		upd_info = _pushing2searching(upd_info, _food[upd_info.food_info.id]);
 		upd_info = _pushingF2recruitingS(upd_info, _food[upd_info.food_info.id]);
 		break;
-	case PUSHING:
+	case PUSHING_O:
 		upd_info = _pushing2searching(upd_info, _food[upd_info.food_info.id]);
 		break;
 	case RECRUITING_S:
