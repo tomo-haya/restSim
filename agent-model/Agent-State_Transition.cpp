@@ -190,10 +190,10 @@ Agent _following2searching2(Agent my_info, Agent leader_info)
 	return upd_info;
 }
 
-Agent _searching2homing(Agent my_info)
+Agent _searching2(Agent my_info)
 {
 	Agent upd_info = my_info;
-	if (my_info.time_searching > MAXTIME_SEARCH) upd_info.state = HOMING_O;
+	if (my_info.time_searching > MAXTIME_SEARCH) upd_info.state = _O;
 	return upd_info;
 }
 
@@ -228,7 +228,7 @@ Agent _following2homing(Agent my_info, Agent leader_info)
 {
 	Agent upd_info = my_info;
 	double dist2robot = hypot(leader_info._posori.pos.x - my_info._posori.pos.x, leader_info._posori.pos.y - my_info._posori.pos.y);//calculate robot-robot distance
-	if (((leader_info.state == HOMING_O || leader_info.state == HOMING_R) && //leader is in homing
+	if (((leader_info.state == HOMING_O) && //leader is in homing
 		dist2robot < (RADIUS_SENSOR + RADIUS_AGENT)) || //leader is in sensing area
 		dist2robot >= (RADIUS_SENSOR + RADIUS_AGENT))//lost leader
 	{
